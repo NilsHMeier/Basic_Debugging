@@ -1,5 +1,10 @@
 def division(x, y):
-    print(x/y)
+    try:
+        print(x/y)
+    except ZeroDivisionError:
+        print('Division by 0 is not possible...')
+    except TypeError:
+        print('TypeError occurred, please check input values...')
 
 
 def main():

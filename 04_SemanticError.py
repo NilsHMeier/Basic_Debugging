@@ -6,9 +6,9 @@ def sum_squares(n: int) -> float:
     :return: Sum of all squared numbers to n as float.
     """
     summed_squared = 0
-    for i in range(n):
+    for i in range(n + 1):
         square = i ** 2
-    summed_squared += square
+        summed_squared += square
     return summed_squared
 
 
