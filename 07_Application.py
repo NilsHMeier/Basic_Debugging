@@ -22,8 +22,8 @@ def load_dataset(path: Path) -> pd.DataFrame:
     for file in os.listdir(path):
         df = pd.read_csv(path.joinpath(file), index_col=0)
         df['label'] = file.split('_')[0]
-        dataset = pd.concat([dataset, df], axis=1)
-    dataset = dataset.drop(columns=['time'], inplace=True)
+        dataset = pd.concat([dataset, df], axis=0)  # Error: axis=1
+    dataset = dataset.drop(columns=['time'], inplace=False)  # Error: inplace=True
     return dataset
 
 
@@ -64,7 +64,7 @@ def main():
                      label_col='label', title='Mean and Std of all three Axis')
 
     # Prepare the data for Machine Learning by splitting into train and test partition
-    features = pd.get_dummies(dataset, columns=['label'])
+    features = dataset.drop(columns=['label'])  # Error: Remove the labels instead of encoding them
     labels = dataset['label']
     x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size=0.3, random_state=42)
 
@@ -72,10 +72,11 @@ def main():
     scaler = StandardScaler()
     scaler.fit(x_train)
     x_train = scaler.transform(x_train)
+    x_test = scaler.transform(x_test)  # Scale the test data as well
 
     # Fit the model
     model = SVC()
-    model.fit(x_train, y_test)
+    model.fit(x_train, y_train)  # Use y_train instead of y_test
     print(f'Train Score = {model.score(x_train, y_train)}')
 
     # Predict the test data and evaluate the predictions
